@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="840.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
+   <children>
+      <TableView fx:id="table" layoutX="-1.0" layoutY="-1.0" prefHeight="600.0" prefWidth="846.0">
+        <columns>
+            <TableColumn fx:id="itemPeriodoCol" editable="false" prefWidth="75.0" sortable="false" text="Periodo" />
+            <TableColumn fx:id="itemCursoCol" editable="false" prefWidth="49.0" sortable="false" text="Curso" />
+            <TableColumn fx:id="itemGrupoCol" editable="false" prefWidth="82.0" sortable="false" text="Grupo" />
+          <TableColumn fx:id="itemDNICol" editable="false" prefWidth="100.0" text="DNI" />
+            <TableColumn fx:id="itemPCCol" editable="false" prefWidth="87.0" sortable="false" text="PC" />
+          <TableColumn fx:id="itemNameCol" editable="false" prefWidth="208.0" sortable="false" text="Nombre" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
