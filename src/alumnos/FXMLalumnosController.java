@@ -9,6 +9,7 @@ import alumnos.model.AlumnosRow;
 import alumnos.model.getAlumnosData;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -39,6 +40,16 @@ public class FXMLalumnosController implements Initializable {
     TableColumn itemPCCol;
     @FXML
     TableColumn itemNameCol;
+    @FXML
+    TableColumn itemFijoCol;
+    @FXML
+    TableColumn itemCLASECol;
+    @FXML
+    TableColumn itemPEC1Col;
+    @FXML
+    TableColumn itemPECCol;
+    @FXML
+    TableColumn itemNOTACol;
     
     final ObservableList<AlumnosRow> alumnosData = FXCollections.observableArrayList();
     
@@ -47,12 +58,17 @@ public class FXMLalumnosController implements Initializable {
         // TODO
         
         // Set up the alumnos table
-        itemPeriodoCol.setCellValueFactory(new PropertyValueFactory<AlumnosRow,String>("itemPeriodo"));
-        itemCursoCol.setCellValueFactory(new PropertyValueFactory<AlumnosRow,String>("itemCurso"));
-        itemGrupoCol.setCellValueFactory(new PropertyValueFactory<AlumnosRow,String>("itemGrupo"));
-        itemDNICol.setCellValueFactory(new PropertyValueFactory<AlumnosRow,String>("itemDNI"));
-        itemPCCol.setCellValueFactory(new PropertyValueFactory<AlumnosRow,String>("itemPC"));
-        itemNameCol.setCellValueFactory(new PropertyValueFactory<AlumnosRow,String>("itemName"));
+        itemPeriodoCol.setCellValueFactory(new PropertyValueFactory<>("itemPeriodo"));
+        itemCursoCol.setCellValueFactory(new PropertyValueFactory<>("itemCurso"));
+        itemGrupoCol.setCellValueFactory(new PropertyValueFactory<>("itemGrupo"));
+        itemDNICol.setCellValueFactory(new PropertyValueFactory<>("itemDNI"));
+        itemPCCol.setCellValueFactory(new PropertyValueFactory<>("itemPC"));
+        itemFijoCol.setCellValueFactory(new PropertyValueFactory<>("itemFijo"));
+        itemNameCol.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+        itemCLASECol.setCellValueFactory(new PropertyValueFactory<>("itemCLASE"));
+        itemPEC1Col.setCellValueFactory(new PropertyValueFactory<>("itemPEC1"));
+        itemPECCol.setCellValueFactory(new PropertyValueFactory<>("itemPEC"));
+        itemNOTACol.setCellValueFactory(new PropertyValueFactory<>("itemNOTA"));
         
         table.setItems(alumnosData);
         
@@ -69,14 +85,18 @@ public class FXMLalumnosController implements Initializable {
                 row.itemCurso.set(rs.getString("Curso"));
                 row.itemGrupo.set(rs.getString("Grupo"));
                 row.itemDNI.set(rs.getString("DNI"));
-                row.itemPC.set(rs.getString("PC"));
-                row.itemName.set(rs.getString("nombre"));
+                row.itemPC.set(rs.getInt("PC"));
+                row.itemFijo.set(rs.getString("fix"));
+                row.itemName.set(rs.getString("nom"));
+                row.itemCLASE.set(rs.getString("CLASE"));
+                row.itemPEC1.set(rs.getString("PEC1"));
+                row.itemPEC.set(rs.getString("PEC"));
+                row.itemNOTA.set(rs.getFloat("NOTA"));
 
                 alumnosData.add(row);
             }   
         }
-        catch(Exception e){
-            e.printStackTrace();
+        catch(SQLException e){
         }
     }
 }
