@@ -23,6 +23,7 @@ public class Alumnos extends Application {
         
         Scene scene = new Scene(root);
         
+        stage.setTitle("Alumnos cursos ST");
         stage.setScene(scene);
         stage.show();
     }

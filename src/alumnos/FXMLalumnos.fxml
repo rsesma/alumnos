@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1000.0" stylesheets="@Alumnos.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
    <children>
-      <TableView fx:id="table" layoutX="-1.0" layoutY="-1.0" prefHeight="600.0" prefWidth="936.0">
+      <TableView fx:id="table" layoutX="-1.0" layoutY="-1.0" prefHeight="600.0" prefWidth="936.0" stylesheets="@Alumnos.css">
         <columns>
             <TableColumn fx:id="itemPeriodoCol" editable="false" prefWidth="75.0" sortable="false" text="Periodo" />
             <TableColumn fx:id="itemCursoCol" editable="false" prefWidth="49.0" sortable="false" text="Curso" />
@@ -18,7 +22,7 @@
             <TableColumn fx:id="itemCLASECol" editable="false" prefWidth="86.0" sortable="false" text="CLASE" />
             <TableColumn fx:id="itemPEC1Col" editable="false" prefWidth="44.0" sortable="false" text="PEC1" />
             <TableColumn fx:id="itemPECCol" editable="false" prefWidth="55.0" sortable="false" text="PEC" />
-            <TableColumn fx:id="itemNOTACol" editable="false" prefWidth="61.0" sortable="false" text="NOTA" />
+            <TableColumn fx:id="itemNOTACol" editable="false" prefWidth="61.0" sortable="false" styleClass="bold.table-cell" text="NOTA" />
         </columns>
       </TableView>
    </children>
