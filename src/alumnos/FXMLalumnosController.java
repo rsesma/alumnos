@@ -10,14 +10,17 @@ import alumnos.model.getAlumnosData;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
@@ -50,6 +53,20 @@ public class FXMLalumnosController implements Initializable {
     TableColumn itemPECCol;
     @FXML
     TableColumn itemNOTACol;
+    @FXML
+    TextField fPeriodo;
+    @FXML
+    TextField fCurso;
+    @FXML
+    TextField fGrupo;
+    @FXML
+    TextField fDNI;
+    @FXML
+    TextField fNombre;
+    @FXML
+    Button btFiltro;
+    @FXML
+    Label lbTotal;
     
     final ObservableList<AlumnosRow> alumnosData = FXCollections.observableArrayList();
     
@@ -72,13 +89,14 @@ public class FXMLalumnosController implements Initializable {
         
         table.setItems(alumnosData);
         
-        LoadAlumnosTable();
+        LoadAlumnosTable("");
     }
 
-    public void LoadAlumnosTable() {
+    public void LoadAlumnosTable(String filter) {
+        int count = 0;        
         try{
             getAlumnosData d = new getAlumnosData();
-            ResultSet rs = d.getAlumnosRs();
+            ResultSet rs = d.getAlumnosRs(filter);
             while(rs.next()){
                 AlumnosRow row = new AlumnosRow();
                 row.itemPeriodo.set(rs.getString("Periodo"));
@@ -94,9 +112,45 @@ public class FXMLalumnosController implements Initializable {
                 row.itemNOTA.set(rs.getFloat("NOTA"));
 
                 alumnosData.add(row);
-            }   
+                
+                count++;
+            }
         }
         catch(SQLException e){
         }
+        lbTotal.setText(count + " registros");
+    }
+    
+    public void FilterTable(ActionEvent event) {
+        String filter = "";
+        if (fPeriodo.getText().length()>0) {
+            filter = "Periodo = '" + fPeriodo.getText() + "'";
+        }
+        if (fCurso.getText().length()>0) {
+            if (filter.length()>0) filter = filter + " AND ";
+            filter = filter + "Curso = '" + fCurso.getText() + "'";
+        }
+        if (fGrupo.getText().length()>0) {
+            if (filter.length()>0) filter = filter + " AND ";
+            filter = filter + "Grupo = '" + fGrupo.getText() + "'";
+        }
+        if (fDNI.getText().length()>0) {
+            if (filter.length()>0) filter = filter + " AND ";
+            filter = filter + "DNI LIKE '%" + fDNI.getText() + "%'";
+        }
+        if (fNombre.getText().length()>0) {
+            if (filter.length()>0) filter = filter + " AND ";
+            filter = filter + "nom LIKE '%" + fNombre.getText() + "%'";
+        }
+        
+        if (filter.length()>0) {
+            alumnosData.removeAll(alumnosData);
+            LoadAlumnosTable(filter);
+        }
+    }
+
+    public void CleanFilter(ActionEvent event) {
+        alumnosData.removeAll(alumnosData);
+        LoadAlumnosTable("");
     }
 }

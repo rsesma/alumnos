@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import java.net.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -8,22 +11,108 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1000.0" stylesheets="@Alumnos.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="1100.0" stylesheets="@Alumnos.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
    <children>
-      <TableView fx:id="table" layoutX="-1.0" layoutY="-1.0" prefHeight="600.0" prefWidth="936.0" stylesheets="@Alumnos.css">
-        <columns>
-            <TableColumn fx:id="itemPeriodoCol" editable="false" prefWidth="75.0" sortable="false" text="Periodo" />
-            <TableColumn fx:id="itemCursoCol" editable="false" prefWidth="49.0" sortable="false" text="Curso" />
-            <TableColumn fx:id="itemGrupoCol" editable="false" prefWidth="82.0" sortable="false" text="Grupo" />
-          <TableColumn fx:id="itemDNICol" editable="false" prefWidth="100.0" sortable="false" text="DNI" />
-            <TableColumn fx:id="itemPCCol" editable="false" prefWidth="36.0" sortable="false" text="PC" />
-            <TableColumn fx:id="itemFijoCol" editable="false" prefWidth="42.0" sortable="false" text="Fijo" />
-          <TableColumn fx:id="itemNameCol" editable="false" prefWidth="292.0" sortable="false" text="Nombre" />
-            <TableColumn fx:id="itemCLASECol" editable="false" prefWidth="86.0" sortable="false" text="CLASE" />
-            <TableColumn fx:id="itemPEC1Col" editable="false" prefWidth="44.0" sortable="false" text="PEC1" />
-            <TableColumn fx:id="itemPECCol" editable="false" prefWidth="55.0" sortable="false" text="PEC" />
-            <TableColumn fx:id="itemNOTACol" editable="false" prefWidth="61.0" sortable="false" styleClass="bold.table-cell" text="NOTA" />
-        </columns>
-      </TableView>
+      <HBox layoutX="-1.0" layoutY="-1.0">
+         <children>
+            <TableView fx:id="table" layoutX="-1.0" layoutY="-1.0" prefHeight="600.0" prefWidth="924.0" stylesheets="@Alumnos.css">
+              <columns>
+                  <TableColumn fx:id="itemPeriodoCol" editable="false" prefWidth="75.0" sortable="false" text="Periodo" />
+                  <TableColumn fx:id="itemCursoCol" editable="false" prefWidth="49.0" sortable="false" text="Curso" />
+                  <TableColumn fx:id="itemGrupoCol" editable="false" prefWidth="82.0" sortable="false" text="Grupo" />
+                <TableColumn fx:id="itemDNICol" editable="false" prefWidth="100.0" sortable="false" text="DNI" />
+                  <TableColumn fx:id="itemPCCol" editable="false" prefWidth="36.0" sortable="false" text="PC" />
+                  <TableColumn fx:id="itemFijoCol" editable="false" prefWidth="42.0" sortable="false" text="Fijo" />
+                <TableColumn fx:id="itemNameCol" editable="false" prefWidth="269.0" sortable="false" text="Nombre" />
+                  <TableColumn fx:id="itemCLASECol" editable="false" prefWidth="109.0" sortable="false" text="CLASE" />
+                  <TableColumn fx:id="itemPEC1Col" editable="false" prefWidth="44.0" sortable="false" styleClass="notaPEC" text="PEC1" />
+                  <TableColumn fx:id="itemPECCol" editable="false" prefWidth="55.0" sortable="false" styleClass="notaPEC" text="PEC" />
+                  <TableColumn fx:id="itemNOTACol" editable="false" prefWidth="61.0" sortable="false" styleClass="notaFin" text="NOTA" />
+              </columns>
+            </TableView>
+            <VBox prefWidth="170.0">
+               <children>
+                  <Label text="Periodo">
+                     <VBox.margin>
+                        <Insets bottom="3.0" left="3.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="fPeriodo" layoutX="933.0" layoutY="14.0" promptText="Periodo" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="14.0">
+                     <VBox.margin>
+                        <Insets left="3.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label text="Curso">
+                     <VBox.margin>
+                        <Insets bottom="3.0" left="3.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="fCurso" layoutX="13.0" layoutY="40.0" promptText="Curso">
+                     <VBox.margin>
+                        <Insets left="3.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label layoutX="13.0" layoutY="72.0" text="Grupo">
+                     <VBox.margin>
+                        <Insets bottom="3.0" left="3.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="fGrupo" layoutX="13.0" layoutY="92.0" promptText="Grupo">
+                     <VBox.margin>
+                        <Insets left="3.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label layoutX="13.0" layoutY="124.0" text="DNI">
+                     <VBox.margin>
+                        <Insets bottom="3.0" left="3.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="fDNI" layoutX="13.0" layoutY="144.0" promptText="DNI">
+                     <VBox.margin>
+                        <Insets left="3.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <Label layoutX="13.0" layoutY="181.0" text="Nombre">
+                     <VBox.margin>
+                        <Insets bottom="3.0" left="3.0" top="10.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="fNombre" layoutX="13.0" layoutY="201.0" promptText="Nombre">
+                     <VBox.margin>
+                        <Insets left="3.0" />
+                     </VBox.margin>
+                  </TextField>
+                  <HBox alignment="TOP_RIGHT" spacing="5.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#CleanFilter" text="Limpiar filtro">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btFiltro" defaultButton="true" mnemonicParsing="false" onAction="#FilterTable" text="Filtrar" textAlignment="CENTER">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Label fx:id="lbTotal" maxWidth="1.7976931348623157E308" text="Label">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="3.0" top="20.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

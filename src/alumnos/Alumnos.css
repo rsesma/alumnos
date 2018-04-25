@@ -8,6 +8,13 @@ and open the template in the editor.
     Author     : r
 */
 
-.bold.table-cell {
-    -fx-font-style : bold ;
+.notaFin {
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+.notaPEC {
+    -fx-alignment: CENTER;
 }

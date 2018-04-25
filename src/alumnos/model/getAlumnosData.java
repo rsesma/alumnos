@@ -26,7 +26,12 @@ public class getAlumnosData {
         return conn;
     }
     
-    public ResultSet getAlumnosRs() throws SQLException {
-        return conn.prepareStatement("SELECT * FROM alumnos_clase").executeQuery();
+    public ResultSet getAlumnosRs(String filter) throws SQLException {
+        if (filter.length()>0) {
+            return conn.prepareStatement("SELECT * FROM alumnos_clase WHERE " + filter).executeQuery();
+        }
+        else {
+            return conn.prepareStatement("SELECT * FROM alumnos_clase").executeQuery();            
+        }
     }
 }
