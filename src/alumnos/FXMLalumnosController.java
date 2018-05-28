@@ -5,23 +5,35 @@
  */
 package alumnos;
 
-import alumnos.model.AlumnosRow;
+import alumnos.model.Alumno;
+import alumnos.model.Notas;
 import alumnos.model.getAlumnosData;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.Callback;
 
 /**
  *
@@ -30,29 +42,29 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class FXMLalumnosController implements Initializable {
     
     @FXML
-    TableView<AlumnosRow> table;
+    TableView<Alumno> table;
     @FXML
-    TableColumn itemPeriodoCol;
+    TableColumn periodoCol;
     @FXML
-    TableColumn itemCursoCol;
+    TableColumn cursoCol;
     @FXML
-    TableColumn itemGrupoCol;
+    TableColumn grupoCol;
     @FXML
-    TableColumn itemDNICol;
+    TableColumn DNICol;
     @FXML
-    TableColumn itemPCCol;
+    TableColumn PCCol;
     @FXML
-    TableColumn itemNameCol;
+    TableColumn fijoCol;
     @FXML
-    TableColumn itemFijoCol;
+    TableColumn nameCol;
     @FXML
-    TableColumn itemCLASECol;
+    TableColumn claseCol;
     @FXML
-    TableColumn itemPEC1Col;
+    TableColumn pec1Col;
     @FXML
-    TableColumn itemPECCol;
+    TableColumn pecCol;
     @FXML
-    TableColumn itemNOTACol;
+    TableColumn notaCol;
     @FXML
     TextField fPeriodo;
     @FXML
@@ -64,30 +76,87 @@ public class FXMLalumnosController implements Initializable {
     @FXML
     TextField fNombre;
     @FXML
-    Button btFiltro;
-    @FXML
     Label lbTotal;
     
-    final ObservableList<AlumnosRow> alumnosData = FXCollections.observableArrayList();
+    final ObservableList<Alumno> data = FXCollections.observableArrayList();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         
-        // Set up the alumnos table
-        itemPeriodoCol.setCellValueFactory(new PropertyValueFactory<>("itemPeriodo"));
-        itemCursoCol.setCellValueFactory(new PropertyValueFactory<>("itemCurso"));
-        itemGrupoCol.setCellValueFactory(new PropertyValueFactory<>("itemGrupo"));
-        itemDNICol.setCellValueFactory(new PropertyValueFactory<>("itemDNI"));
-        itemPCCol.setCellValueFactory(new PropertyValueFactory<>("itemPC"));
-        itemFijoCol.setCellValueFactory(new PropertyValueFactory<>("itemFijo"));
-        itemNameCol.setCellValueFactory(new PropertyValueFactory<>("itemName"));
-        itemCLASECol.setCellValueFactory(new PropertyValueFactory<>("itemCLASE"));
-        itemPEC1Col.setCellValueFactory(new PropertyValueFactory<>("itemPEC1"));
-        itemPECCol.setCellValueFactory(new PropertyValueFactory<>("itemPEC"));
-        itemNOTACol.setCellValueFactory(new PropertyValueFactory<>("itemNOTA"));
+        this.table.setEditable(true);
         
-        table.setItems(alumnosData);
+        // Set up the alumnos table
+        this.periodoCol.setCellValueFactory(new PropertyValueFactory<>("Periodo"));
+        this.cursoCol.setCellValueFactory(new PropertyValueFactory<>("Curso"));
+        this.grupoCol.setCellValueFactory(new PropertyValueFactory<>("Grupo"));
+        this.DNICol.setCellValueFactory(new PropertyValueFactory<>("DNI"));
+        this.nameCol.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        this.pec1Col.setCellValueFactory(new PropertyValueFactory<>("PEC1"));
+        this.pecCol.setCellValueFactory(new PropertyValueFactory<>("PEC"));
+        this.notaCol.setCellValueFactory(new PropertyValueFactory<>("NOTA"));
+        
+        // pc is editable
+        this.PCCol.setCellValueFactory(new PropertyValueFactory<>("PC"));
+        this.PCCol.setCellFactory(TextFieldTableCell.<Alumno> forTableColumn());
+        
+        // checkbox fijo
+        this.fijoCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Alumno, Boolean>, ObservableValue<Boolean>>() {
+            @Override
+            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Alumno, Boolean> param) {
+                Alumno a = param.getValue();
+                SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(a.getFijo());
+ 
+                // Note: singleCol.setOnEditCommit(): Not work for
+                // CheckBoxTableCell.
+ 
+                // When "Fijo" column change.
+                booleanProp.addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                            Boolean newValue) { a.setFijo(newValue); }
+                });
+                
+                return booleanProp;
+            }
+        });
+        this.fijoCol.setCellFactory(new Callback<TableColumn<Alumno, Boolean>, TableCell<Alumno, Boolean>>() {
+            @Override
+            public TableCell<Alumno, Boolean> call(TableColumn<Alumno, Boolean> p) {
+                CheckBoxTableCell<Alumno, Boolean> cell = new CheckBoxTableCell<Alumno, Boolean>();
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
+        
+        // combo notas
+        ObservableList<Notas> notasList = FXCollections.observableArrayList(Notas.values());
+        this.claseCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Alumno, Notas>, ObservableValue<Notas>>() {
+            @Override
+            public ObservableValue<Notas> call(TableColumn.CellDataFeatures<Alumno, Notas> param) {
+                Alumno a = param.getValue();
+                String notasCode = a.getClase();
+                Notas nota = Notas.getByCode(notasCode);
+                return new SimpleObjectProperty<Notas>(nota);
+            }
+        });
+        
+        this.claseCol.setCellFactory(ComboBoxTableCell.forTableColumn(notasList));
+        this.claseCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Alumno, Notas>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Alumno, Notas> event) {
+                TablePosition<Alumno, Notas> pos = event.getTablePosition();
+                
+                Notas newNota = event.getNewValue();
+                
+                int row = pos.getRow();
+                Alumno a = event.getTableView().getItems().get(row);
+                
+                a.setClase(newNota.getCode());
+            }
+        });
+        
+        table.setItems(this.data);
         
         LoadAlumnosTable("");
     }
@@ -98,25 +167,26 @@ public class FXMLalumnosController implements Initializable {
             getAlumnosData d = new getAlumnosData();
             ResultSet rs = d.getAlumnosRs(filter);
             while(rs.next()){
-                AlumnosRow row = new AlumnosRow();
-                row.itemPeriodo.set(rs.getString("Periodo"));
-                row.itemCurso.set(rs.getString("Curso"));
-                row.itemGrupo.set(rs.getString("Grupo"));
-                row.itemDNI.set(rs.getString("DNI"));
-                row.itemPC.set(rs.getInt("PC"));
-                row.itemFijo.set(rs.getString("fix"));
-                row.itemName.set(rs.getString("nom"));
-                row.itemCLASE.set(rs.getString("CLASE"));
-                row.itemPEC1.set(rs.getString("PEC1"));
-                row.itemPEC.set(rs.getString("PEC"));
-                row.itemNOTA.set(rs.getFloat("NOTA"));
+                Alumno a = new Alumno();
+                a.setPeriodo(rs.getString("Periodo"));
+                a.setCurso(rs.getString("Curso"));
+                a.setGrupo(rs.getString("Grupo"));
+                a.setDNI(rs.getString("DNI"));
+                a.setPC(rs.getString("PC"));
+                a.setFijo(rs.getBoolean("Fijo"));
+                a.setName(rs.getString("nom"));
+                a.setClase(rs.getString("CLASE"));
+                a.setPEC1(rs.getString("PEC1"));
+                a.setPEC(rs.getString("PEC"));
+                a.setNOTA(rs.getString("NOTA"));
 
-                alumnosData.add(row);
+                this.data.add(a);
                 
                 count++;
             }
         }
         catch(SQLException e){
+            System.out.println(e.getMessage());
         }
         lbTotal.setText(count + " registros");
     }
@@ -144,13 +214,13 @@ public class FXMLalumnosController implements Initializable {
         }
         
         if (filter.length()>0) {
-            alumnosData.removeAll(alumnosData);
+            this.data.removeAll(this.data);
             LoadAlumnosTable(filter);
         }
     }
 
     public void CleanFilter(ActionEvent event) {
-        alumnosData.removeAll(alumnosData);
+        this.data.removeAll(this.data);
         LoadAlumnosTable("");
     }
 }

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package alumnos;
 
 import javafx.application.Application;
@@ -23,7 +19,7 @@ public class Alumnos extends Application {
         
         Scene scene = new Scene(root);
         
-        stage.setTitle("Alumnos cursos ST");
+        stage.setTitle("Alumnos cursos Stata");
         stage.setScene(scene);
         stage.show();
     }
