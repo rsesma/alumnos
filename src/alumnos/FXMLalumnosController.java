@@ -23,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -33,6 +34,9 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
@@ -66,23 +70,32 @@ public class FXMLalumnosController implements Initializable {
     @FXML
     TableColumn notaCol;
     @FXML
-    TextField fPeriodo;
+    TableColumn comentCol;
     @FXML
-    TextField fCurso;
+    Label ntotal;
     @FXML
-    TextField fGrupo;
+    TextField search;
     @FXML
-    TextField fDNI;
+    Button btSearch;
     @FXML
-    TextField fNombre;
-    @FXML
-    Label lbTotal;
+    Button btClean;
     
     final ObservableList<Alumno> data = FXCollections.observableArrayList();
+    
+    getAlumnosData d;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+	ImageView imgSearch = new ImageView(new Image(getClass().getResourceAsStream("search.png")));
+	imgSearch.setFitWidth(15);
+	imgSearch.setFitHeight(15);
+        this.btSearch.setGraphic(imgSearch);
+        
+	ImageView imgClean = new ImageView(new Image(getClass().getResourceAsStream("no_filter.png")));
+	imgClean.setFitWidth(15);
+	imgClean.setFitHeight(15);
+        this.btClean.setGraphic(imgClean);
         
         this.table.setEditable(true);
         
@@ -99,6 +112,28 @@ public class FXMLalumnosController implements Initializable {
         // pc is editable
         this.PCCol.setCellValueFactory(new PropertyValueFactory<>("PC"));
         this.PCCol.setCellFactory(TextFieldTableCell.<Alumno> forTableColumn());
+        this.PCCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Alumno, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Alumno, String> event) {
+                TablePosition<Alumno, String> pos = event.getTablePosition();                
+                Alumno a = event.getTableView().getItems().get(pos.getRow());
+                a.setPC(event.getNewValue());
+                a.setChanged(true);
+            }
+        });
+
+        
+        this.comentCol.setCellValueFactory(new PropertyValueFactory<>("Coment"));
+        this.comentCol.setCellFactory(TextFieldTableCell.<Alumno> forTableColumn());
+        this.comentCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Alumno, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Alumno, String> event) {
+                TablePosition<Alumno, String> pos = event.getTablePosition();                
+                Alumno a = event.getTableView().getItems().get(pos.getRow());
+                a.setComent(event.getNewValue());
+                a.setChanged(true);
+            }
+        });
         
         // checkbox fijo
         this.fijoCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Alumno, Boolean>, ObservableValue<Boolean>>() {
@@ -114,7 +149,10 @@ public class FXMLalumnosController implements Initializable {
                 booleanProp.addListener(new ChangeListener<Boolean>() {
                     @Override
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                            Boolean newValue) { a.setFijo(newValue); }
+                            Boolean newValue) { 
+                        a.setFijo(newValue);
+                        a.setChanged(true);
+                    }
                 });
                 
                 return booleanProp;
@@ -139,33 +177,64 @@ public class FXMLalumnosController implements Initializable {
                 Notas nota = Notas.getByCode(notasCode);
                 return new SimpleObjectProperty<Notas>(nota);
             }
-        });
-        
+        });        
         this.claseCol.setCellFactory(ComboBoxTableCell.forTableColumn(notasList));
         this.claseCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Alumno, Notas>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Alumno, Notas> event) {
                 TablePosition<Alumno, Notas> pos = event.getTablePosition();
-                
-                Notas newNota = event.getNewValue();
-                
-                int row = pos.getRow();
-                Alumno a = event.getTableView().getItems().get(row);
-                
-                a.setClase(newNota.getCode());
+                Alumno a = event.getTableView().getItems().get(pos.getRow());
+                a.setClase(event.getNewValue().getCode());
+                a.setChanged(true);
             }
         });
         
         table.setItems(this.data);
-        
+    }
+    
+    @FXML
+    public void pbSearch(ActionEvent event) {
+        String filter = "";
+        if (!this.search.getText().trim().isEmpty()) {
+            filter = "Periodo = '".concat(this.search.getText()).concat("'");
+            filter = filter.concat("OR Grupo = '").concat(this.search.getText()).concat("'");
+            filter = filter.concat("OR DNI LIKE '%").concat(this.search.getText()).concat("%'");
+            filter = filter.concat("OR nom LIKE '%").concat(this.search.getText()).concat("%'");
+            this.data.removeAll(this.data);
+            LoadAlumnosTable(filter);
+        }
+    }
+
+    @FXML
+    public void pbClean(ActionEvent event) {
+        this.data.removeAll(this.data);
+        this.search.setText("");
         LoadAlumnosTable("");
     }
 
+    @FXML
+    public void pbGrabar(ActionEvent event) {
+        this.data.forEach((a) -> { 
+            if (a.getChanged()) {
+                this.d.updateAlumno(a);
+            }
+        });
+    }
+    
+    @FXML
+    public void pbCerrar(ActionEvent event) {
+        closeWindow();
+    }
+    
+    public void SetData(getAlumnosData d) {
+        this.d = d;
+        LoadAlumnosTable("");
+    }
+    
     public void LoadAlumnosTable(String filter) {
         int count = 0;        
         try{
-            getAlumnosData d = new getAlumnosData();
-            ResultSet rs = d.getAlumnosRs(filter);
+            ResultSet rs = this.d.getAlumnosRs(filter);
             while(rs.next()){
                 Alumno a = new Alumno();
                 a.setPeriodo(rs.getString("Periodo"));
@@ -179,7 +248,8 @@ public class FXMLalumnosController implements Initializable {
                 a.setPEC1(rs.getString("PEC1"));
                 a.setPEC(rs.getString("PEC"));
                 a.setNOTA(rs.getString("NOTA"));
-
+                a.setComent(rs.getString("Comentario"));
+                
                 this.data.add(a);
                 
                 count++;
@@ -188,39 +258,11 @@ public class FXMLalumnosController implements Initializable {
         catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        lbTotal.setText(count + " registros");
+        this.ntotal.setText(count + " registros");
     }
     
-    public void FilterTable(ActionEvent event) {
-        String filter = "";
-        if (fPeriodo.getText().length()>0) {
-            filter = "Periodo = '" + fPeriodo.getText() + "'";
-        }
-        if (fCurso.getText().length()>0) {
-            if (filter.length()>0) filter = filter + " AND ";
-            filter = filter + "Curso = '" + fCurso.getText() + "'";
-        }
-        if (fGrupo.getText().length()>0) {
-            if (filter.length()>0) filter = filter + " AND ";
-            filter = filter + "Grupo = '" + fGrupo.getText() + "'";
-        }
-        if (fDNI.getText().length()>0) {
-            if (filter.length()>0) filter = filter + " AND ";
-            filter = filter + "DNI LIKE '%" + fDNI.getText() + "%'";
-        }
-        if (fNombre.getText().length()>0) {
-            if (filter.length()>0) filter = filter + " AND ";
-            filter = filter + "nom LIKE '%" + fNombre.getText() + "%'";
-        }
-        
-        if (filter.length()>0) {
-            this.data.removeAll(this.data);
-            LoadAlumnosTable(filter);
-        }
-    }
-
-    public void CleanFilter(ActionEvent event) {
-        this.data.removeAll(this.data);
-        LoadAlumnosTable("");
-    }
+    private void closeWindow() {
+        Stage stage = (Stage) this.search.getScene().getWindow();
+        stage.close();
+    }    
 }
