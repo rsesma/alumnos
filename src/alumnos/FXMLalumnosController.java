@@ -8,6 +8,8 @@ package alumnos;
 import alumnos.model.Alumno;
 import alumnos.model.Notas;
 import alumnos.model.getAlumnosData;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,8 +38,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
  *
@@ -219,6 +226,38 @@ public class FXMLalumnosController implements Initializable {
                 this.d.updateAlumno(a);
             }
         });
+    }
+    
+    @FXML
+    public void pbImportar(ActionEvent event) {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open Resource File");
+        chooser.setInitialDirectory(new File(System.getProperty("user.home"))); 
+        File file = chooser.showOpenDialog(null);
+        if (file != null) {
+            try {
+                FileInputStream input = new FileInputStream(file.getAbsolutePath());
+                HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(input));
+                HSSFSheet sheet = wb.getSheetAt(0);
+                org.apache.poi.ss.usermodel.Row row;
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    row = sheet.getRow(i);
+                    this.d.importExcelFile(row);
+                    
+/*                    double Level = row.getCell(2).getNumericCellValue();
+                    double A = row.getCell(3).getNumericCellValue();
+                    double B = row.getCell(4).getNumericCellValue();
+                    double C = row.getCell(5).getNumericCellValue();
+                    String sql = "INSERT INTO description_process_level VALUES('" + Process + "','" + Level + "','" + A + "',`" + B + "`,`" + C +)";
+                    pstm = (PreparedStatement) con.prepareStatement(sql);
+                    pstm.execute();
+                    System.out.println("Import rows " + i);*/
+                }
+                input.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }            
+        }
     }
     
     @FXML

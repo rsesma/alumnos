@@ -40,6 +40,28 @@ public class getAlumnosData {
             return conn.prepareStatement("SELECT * FROM alumnos_clase").executeQuery();            
         }
     }
+
+    public void importExcelFile(org.apache.poi.ss.usermodel.Row row) {
+        try {
+            String grupo = row.getCell(0).getStringCellValue() + row.getCell(1).getStringCellValue() + row.getCell(2).getStringCellValue();
+            String dni = row.getCell(3).getStringCellValue();
+            String nombre = row.getCell(4).getStringCellValue();
+            
+            System.out.println(grupo + ";" + dni + ";" + nombre);
+
+/*            PreparedStatement q;
+            q = conn.prepareStatement("UPDATE alumnos SET PC = ?, Fijo = ?, Comentario = ? WHERE DNI = ? AND GRUPO = ?");
+            q.setString(1,a.getPC());
+            q.setBoolean(2,a.getFijo());
+            q.setString(3,a.getComent());
+            q.setString(4,a.getDNI());
+            q.setString(5,a.getGrupo());
+            q.executeUpdate();*/
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+        }
+    }
     
     public void updateAlumno(Alumno a) {
         try {

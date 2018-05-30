@@ -35,5 +35,6 @@
       <Button fx:id="btClean" layoutX="305.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbClean" prefHeight="25.0" prefWidth="25.0"> </Button>
       <Button cancelButton="true" layoutX="1129.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbCerrar" text="Cerrar" />
       <Button cancelButton="true" layoutX="1059.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbGrabar" text="Grabar" />
+      <Button cancelButton="true" layoutX="978.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbImportar" text="Importar" />
    </children>
 </AnchorPane>
