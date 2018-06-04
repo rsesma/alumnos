@@ -41,22 +41,24 @@ public class getAlumnosData {
         }
     }
 
-    public void importExcelFile(org.apache.poi.ss.usermodel.Row row) {
+    public void importExcelRow(org.apache.poi.ss.usermodel.Row row, String periodo) {
         try {
             String grupo = row.getCell(0).getStringCellValue() + row.getCell(1).getStringCellValue() + row.getCell(2).getStringCellValue();
-            String dni = row.getCell(3).getStringCellValue();
-            String nombre = row.getCell(4).getStringCellValue();
             
-            System.out.println(grupo + ";" + dni + ";" + nombre);
-
-/*            PreparedStatement q;
-            q = conn.prepareStatement("UPDATE alumnos SET PC = ?, Fijo = ?, Comentario = ? WHERE DNI = ? AND GRUPO = ?");
-            q.setString(1,a.getPC());
-            q.setBoolean(2,a.getFijo());
-            q.setString(3,a.getComent());
-            q.setString(4,a.getDNI());
-            q.setString(5,a.getGrupo());
-            q.executeUpdate();*/
+            PreparedStatement q;
+            q = this.conn.prepareStatement("INSERT INTO alumnos (Periodo,Curso,DNI,Grupo,nombre,ape1,ape2,email,provincia,poblacion) " +
+                                            "VALUES(?,?,?,?,?,?,?,?,?,?)");
+            q.setString(1,periodo);
+            q.setString(2,row.getCell(0).getStringCellValue());
+            q.setString(3,row.getCell(3).getStringCellValue());
+            q.setString(4,grupo);
+            q.setString(5,row.getCell(4).getStringCellValue());
+            q.setString(6,row.getCell(5).getStringCellValue());
+            q.setString(7,row.getCell(6).getStringCellValue());
+            q.setString(8,row.getCell(8).getStringCellValue());
+            q.setString(9,row.getCell(10).getStringCellValue());
+            q.setString(10,row.getCell(9).getStringCellValue());
+            q.executeUpdate();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
             alert.showAndWait();
@@ -66,16 +68,18 @@ public class getAlumnosData {
     public void updateAlumno(Alumno a) {
         try {
             PreparedStatement q;
-            q = conn.prepareStatement("UPDATE alumnos SET PC = ?, Fijo = ?, Comentario = ? WHERE DNI = ? AND GRUPO = ?");
+            q = conn.prepareStatement("UPDATE alumnos SET PC = ?, Fijo = ?, CLASE = ?, Comentario = ? WHERE DNI = ? AND GRUPO = ?");
             q.setString(1,a.getPC());
             q.setBoolean(2,a.getFijo());
-            q.setString(3,a.getComent());
-            q.setString(4,a.getDNI());
-            q.setString(5,a.getGrupo());
+            q.setString(3,a.getClase());
+            q.setString(4,a.getComent());
+            q.setString(5,a.getDNI());
+            q.setString(6,a.getGrupo());
             q.executeUpdate();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
             alert.showAndWait();
         }
     }
+
 }

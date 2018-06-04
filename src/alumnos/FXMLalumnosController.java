@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,13 +26,17 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -231,32 +236,41 @@ public class FXMLalumnosController implements Initializable {
     @FXML
     public void pbImportar(ActionEvent event) {
         FileChooser chooser = new FileChooser();
-        chooser.setTitle("Open Resource File");
+        chooser.setTitle("Abrir archivo de datos");
         chooser.setInitialDirectory(new File(System.getProperty("user.home"))); 
         File file = chooser.showOpenDialog(null);
         if (file != null) {
-            try {
-                FileInputStream input = new FileInputStream(file.getAbsolutePath());
-                HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(input));
-                HSSFSheet sheet = wb.getSheetAt(0);
-                org.apache.poi.ss.usermodel.Row row;
-                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                    row = sheet.getRow(i);
-                    this.d.importExcelFile(row);
+            TextInputDialog dialog = new TextInputDialog("");
+            dialog.setTitle("Indicar periodo");
+            dialog.setHeaderText("Indicar periodo");
+            dialog.setContentText("Periodo:");
+            Optional<String> periodo = dialog.showAndWait();
+            if (periodo.isPresent()){
+                try {
+                    FileInputStream input = new FileInputStream(file.getAbsolutePath());
+                    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(input));
+                    HSSFSheet sheet = wb.getSheetAt(0);
+                    org.apache.poi.ss.usermodel.Row row;
+                    for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                        row = sheet.getRow(i);
+                        this.d.importExcelRow(row, periodo.get());
+                    }
+                    input.close();
                     
-/*                    double Level = row.getCell(2).getNumericCellValue();
-                    double A = row.getCell(3).getNumericCellValue();
-                    double B = row.getCell(4).getNumericCellValue();
-                    double C = row.getCell(5).getNumericCellValue();
-                    String sql = "INSERT INTO description_process_level VALUES('" + Process + "','" + Level + "','" + A + "',`" + B + "`,`" + C +)";
-                    pstm = (PreparedStatement) con.prepareStatement(sql);
-                    pstm.execute();
-                    System.out.println("Import rows " + i);*/
+                    String filter = "";
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.setTitle("Importación finalizada");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Importación finalizada.\n¿Visualizar el periodo?");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK) filter = "Periodo = '" + periodo.get() + "'";
+                    
+                    this.data.removeAll(this.data);
+                    LoadAlumnosTable(filter);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
-                input.close();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }            
+            }
         }
     }
     
