@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="410.0" prefWidth="767.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLproblemasController">
+   <children>
+      <TableView fx:id="table" layoutX="4.0" prefHeight="369.0" prefWidth="761.0">
+        <columns>
+          <TableColumn fx:id="grupoCol" editable="false" prefWidth="62.0" sortable="false" text="Grupo" />
+            <TableColumn fx:id="dniCol" editable="false" prefWidth="90.0" sortable="false" text="DNI" />
+          <TableColumn fx:id="nombreCol" editable="false" prefWidth="228.0" sortable="false" text="Nombre" />
+            <TableColumn fx:id="mdbCol" prefWidth="45.0" sortable="false" text="MDB" />
+            <TableColumn fx:id="pdfCol" prefWidth="45.0" sortable="false" text="PDF" />
+            <TableColumn fx:id="honorCol" prefWidth="45.0" sortable="false" text="Honor" />
+            <TableColumn fx:id="emailCol" editable="false" prefWidth="223.0" sortable="false" text="eMail" />
+        </columns>
+      </TableView>
+      <TextField fx:id="search" layoutX="5.0" layoutY="376.0" prefHeight="27.0" prefWidth="299.0" promptText="Buscar" />
+      <Button fx:id="btClean" layoutX="348.0" layoutY="377.0" mnemonicParsing="false" onAction="#pbClean" prefHeight="25.0" prefWidth="25.0" />
+      <Button fx:id="btSearch" defaultButton="true" layoutX="313.0" layoutY="377.0" mnemonicParsing="false" onAction="#pbSearch" prefHeight="25.0" prefWidth="25.0" textAlignment="CENTER" />
+      <Button layoutX="679.0" layoutY="377.0" mnemonicParsing="false" onAction="#pbCopiarMail" text="Copiar eMail" />
+      <Button layoutX="385.0" layoutY="377.0" mnemonicParsing="false" onAction="#pbGrabar" text="Grabar" />
+   </children>
+</AnchorPane>

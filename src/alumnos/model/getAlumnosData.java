@@ -41,6 +41,15 @@ public class getAlumnosData {
         }
     }
 
+    public ResultSet getProblemasPEC1(String filter) throws SQLException {
+        if (filter.length()>0) {
+            return conn.prepareStatement("SELECT * FROM problemasPEC1 WHERE " + filter).executeQuery();
+        }
+        else {
+            return conn.prepareStatement("SELECT * FROM problemasPEC1").executeQuery();            
+        }
+    }
+    
     public void importExcelRow(org.apache.poi.ss.usermodel.Row row, String periodo) {
         try {
             String grupo = row.getCell(0).getStringCellValue() + row.getCell(1).getStringCellValue() + row.getCell(2).getStringCellValue();
@@ -58,6 +67,22 @@ public class getAlumnosData {
             q.setString(8,row.getCell(8).getStringCellValue());
             q.setString(9,row.getCell(10).getStringCellValue());
             q.setString(10,row.getCell(9).getStringCellValue());
+            q.executeUpdate();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    public void entregaPEC1(String dni, Boolean mdb, Boolean pdf, Boolean honor) {
+        try {
+            PreparedStatement q;
+            q = this.conn.prepareStatement("INSERT INTO entregahonorpec1 (DNI,entregada,mdb,pdf,honor) VALUES(?,?,?,?,?)");
+            q.setString(1, dni);
+            q.setBoolean(2, true);
+            q.setBoolean(3, mdb);
+            q.setBoolean(4, pdf);
+            q.setBoolean(5, honor);
             q.executeUpdate();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
@@ -82,4 +107,18 @@ public class getAlumnosData {
         }
     }
 
+    public void updateEntregaPEC1(Problema p) {
+        try {
+            PreparedStatement q;
+            q = conn.prepareStatement("UPDATE entregahonorpec1 SET mdb = ?, pdf = ?, honor = ? WHERE DNI = ?");
+            q.setBoolean(1,p.getMDB());
+            q.setBoolean(2,p.getPDF());
+            q.setBoolean(3,p.getHonor());
+            q.setString(4,p.getDNI());
+            q.executeUpdate();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+        }
+    }
 }

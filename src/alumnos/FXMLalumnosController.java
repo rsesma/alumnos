@@ -8,13 +8,19 @@ package alumnos;
 import alumnos.model.Alumno;
 import alumnos.model.Notas;
 import alumnos.model.getAlumnosData;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -24,8 +30,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -43,7 +52,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -95,6 +106,10 @@ public class FXMLalumnosController implements Initializable {
     final ObservableList<Alumno> data = FXCollections.observableArrayList();
     
     getAlumnosData d;
+    
+    private static final String PEC1_comprimidas = "/CorregirPECs/ST1/PEC1/comprimidas";
+    private static final String PEC1_originales = "/CorregirPECs/ST1/PEC1/originales";
+    private final File home = new File(System.getProperty("user.home"));
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -225,16 +240,16 @@ public class FXMLalumnosController implements Initializable {
     }
 
     @FXML
-    public void pbGrabar(ActionEvent event) {
+    public void mnuSave(ActionEvent event) {
         this.data.forEach((a) -> { 
             if (a.getChanged()) {
                 this.d.updateAlumno(a);
             }
         });
     }
-    
+        
     @FXML
-    public void pbImportar(ActionEvent event) {
+    public void mnuImportar(ActionEvent event) {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Abrir archivo de datos");
         chooser.setInitialDirectory(new File(System.getProperty("user.home"))); 
@@ -273,10 +288,149 @@ public class FXMLalumnosController implements Initializable {
             }
         }
     }
+        
+    @FXML
+    public void mnuDescomprimirPEC1(ActionEvent event) {
+        DirectoryChooser chooser;
+        File def;
+        
+        // get zip folder
+        chooser = new DirectoryChooser();
+        chooser.setTitle("Escoger carpeta PEC1 comprimidas");
+        def = new File(this.home, PEC1_comprimidas);
+        chooser.setInitialDirectory(def);
+        File zips = chooser.showDialog(null);
+        
+        if (zips != null) {
+            // get unzip folder
+            chooser = new DirectoryChooser();
+            chooser.setTitle("Escoger carpeta PEC1 originales");
+            def = new File(this.home, PEC1_originales);
+            chooser.setInitialDirectory(def);
+            File unzip = chooser.showDialog(null);
+            if (unzip != null) {
+                // get all zip files
+                FilenameFilter pdfFilter;
+                pdfFilter = (File dir1, String name) -> {
+                    String lowercaseName = name.toLowerCase();
+                    return lowercaseName.endsWith(".zip");
+                };
+                File[] listOfFiles = zips.listFiles(pdfFilter);
+
+                for (File file : listOfFiles) {
+                    if (file.isFile()) {
+                        byte[] buffer = new byte[1024];
+                        
+                        // get DNI from file name
+                        String n = file.getName();
+                        String dni = n.substring(n.lastIndexOf("_")+1,n.lastIndexOf("."));
+                        
+                        // create output directory if it doesn't exists
+                        File dir = new File(unzip.getAbsolutePath(), dni);
+                        if (!dir.exists()) dir.mkdir();
+                        
+                        try {
+                            // get the zip file content
+                            ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
+                            //get the zipped file list entry
+                            ZipEntry ze = zis.getNextEntry();
+                            while (ze!=null) {
+                                String fileName = ze.getName();
+                                File newFile = new File(dir + File.separator + fileName);
+
+                                // create all non exists folders else you will hit FileNotFoundException for compressed folder
+                                new File(newFile.getParent()).mkdirs();
+
+                                FileOutputStream fos = new FileOutputStream(newFile);             
+                                int len;
+                                while ((len = zis.read(buffer)) > 0) {
+                                    fos.write(buffer, 0, len);
+                                }
+                                fos.close();
+                                
+                                ze = zis.getNextEntry();
+                            }
+                            zis.closeEntry();
+                            zis.close();
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
+                
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Proceso finalizado");
+                alert.showAndWait();
+            }
+        }
+    }
     
     @FXML
-    public void pbCerrar(ActionEvent event) {
-        closeWindow();
+    public void mnuEntregaPEC1(ActionEvent event) {
+        // get PECs folder
+        DirectoryChooser chooser = new DirectoryChooser();
+        File def = new File(this.home, PEC1_originales);
+        chooser.setTitle("Escoger carpeta PEC1 comprimidas");
+        chooser.setInitialDirectory(def);
+        File dir = chooser.showDialog(null);
+        if (dir != null) {
+            // get PEC1 folders
+            File[] folders = dir.listFiles();
+            for (File folder : folders) {
+                if (folder.isDirectory()) {
+                    String dni = folder.getName();
+            
+                    // get list of files for the dni and confirm PEC1 elements
+                    boolean foundMdb = false;
+                    boolean foundPdf = false;
+                    boolean honor = false;
+                    File[] listOfFiles = folder.listFiles();
+                    for (File file : listOfFiles) {
+                        if (file.isFile()) {
+                            String ext = file.getName().toLowerCase().substring(file.getName().lastIndexOf(".")+1);     //file extension
+                            
+                            // there's a database
+                            if (ext.equals("mdb") || ext.equals("accdb") || ext.equals("odb")) foundMdb = true;
+                            
+                            // there's a pdf form file
+                            if (ext.equals("pdf")) {
+                                foundPdf = true;                                
+                                // open pdf file
+                                try {
+                                    PdfReader reader = new PdfReader(file.getAbsolutePath());
+                                    AcroFields form = reader.getAcroFields();
+                                    // get honor field
+                                    if (form.getFields().size()>0) honor = (form.getField("HONOR").equalsIgnoreCase("yes"));
+                                } catch (Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                            }
+                        }
+                    }
+                    
+                    this.d.entregaPEC1(dni, foundMdb, foundPdf, honor);
+                }
+            }
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Proceso finalizado");
+            alert.showAndWait();
+        }
+    }
+    
+    @FXML
+    public void mnuProblemasPEC1(ActionEvent event) {
+        try {
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("FXMLproblemas.fxml"));
+            Parent r = (Parent) fxml.load();            
+            Stage stage = new Stage(); 
+            stage.initModality(Modality.APPLICATION_MODAL); 
+            stage.setScene(new Scene(r));
+            stage.setTitle("Problemas PEC1");
+            FXMLproblemasController probl = fxml.<FXMLproblemasController>getController();
+            probl.SetData(this.d);
+            stage.showAndWait();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     
     public void SetData(getAlumnosData d) {
@@ -314,6 +468,7 @@ public class FXMLalumnosController implements Initializable {
         this.ntotal.setText(count + " registros");
     }
     
+    @FXML
     private void closeWindow() {
         Stage stage = (Stage) this.search.getScene().getWindow();
         stage.close();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.input.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -11,9 +12,9 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="667.0" prefWidth="1200.0" stylesheets="@Alumnos.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
+<AnchorPane id="AnchorPane" prefHeight="645.0" prefWidth="1200.0" stylesheets="@Alumnos.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
    <children>
-      <TableView fx:id="table" prefHeight="600.0" prefWidth="1200.0" stylesheets="@Alumnos.css">
+      <TableView fx:id="table" layoutY="26.0" prefHeight="574.0" prefWidth="1200.0" stylesheets="@Alumnos.css">
         <columns>
             <TableColumn fx:id="periodoCol" editable="false" prefWidth="75.0" sortable="false" text="Periodo" />
             <TableColumn fx:id="cursoCol" editable="false" prefWidth="50.0" sortable="false" text="Curso" />
@@ -29,12 +30,39 @@
             <TableColumn fx:id="comentCol" prefWidth="270.0" sortable="false" text="Comentarios" />
         </columns>
       </TableView>
-      <Label fx:id="ntotal" layoutX="5.0" layoutY="605.0" text="Label" />
-      <TextField fx:id="search" layoutX="5.0" layoutY="629.0" prefHeight="27.0" prefWidth="260.0" promptText="Buscar" />
-      <Button fx:id="btSearch" defaultButton="true" layoutX="270.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbSearch" prefHeight="25.0" prefWidth="25.0" textAlignment="CENTER"> </Button>
-      <Button fx:id="btClean" layoutX="305.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbClean" prefHeight="25.0" prefWidth="25.0"> </Button>
-      <Button cancelButton="true" layoutX="1129.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbCerrar" text="Cerrar" />
-      <Button layoutX="1059.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbGrabar" text="Grabar" />
-      <Button layoutX="978.0" layoutY="629.0" mnemonicParsing="false" onAction="#pbImportar" text="Importar" />
+      <Label fx:id="ntotal" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="1049.0" layoutY="607.0" prefHeight="17.0" prefWidth="137.0" text="Label" textAlignment="RIGHT" />
+      <TextField fx:id="search" layoutX="3.0" layoutY="607.0" prefHeight="27.0" prefWidth="299.0" promptText="Buscar" />
+      <Button fx:id="btSearch" defaultButton="true" layoutX="311.0" layoutY="608.0" mnemonicParsing="false" onAction="#pbSearch" prefHeight="25.0" prefWidth="25.0" textAlignment="CENTER"> </Button>
+      <Button fx:id="btClean" layoutX="346.0" layoutY="608.0" mnemonicParsing="false" onAction="#pbClean" prefHeight="25.0" prefWidth="25.0"> </Button>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1200.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Archivo">
+            <items>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuImportar" text="Importar">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuSave" text="Grabar">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+              <MenuItem mnemonicParsing="false" onAction="#closeWindow" text="Cerrar">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Corregir">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#mnuDescomprimirPEC1" text="Descomprimir PEC1" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuEntregaPEC1" text="Entrega PEC1" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuProblemasPEC1" text="Problemas PEC1" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
    </children>
 </AnchorPane>
