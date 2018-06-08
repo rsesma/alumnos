@@ -14,26 +14,6 @@
 
 <AnchorPane id="AnchorPane" prefHeight="645.0" prefWidth="1200.0" stylesheets="@Alumnos.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="alumnos.FXMLalumnosController">
    <children>
-      <TableView fx:id="table" layoutY="26.0" prefHeight="574.0" prefWidth="1200.0" stylesheets="@Alumnos.css">
-        <columns>
-            <TableColumn fx:id="periodoCol" editable="false" prefWidth="75.0" sortable="false" text="Periodo" />
-            <TableColumn fx:id="cursoCol" editable="false" prefWidth="50.0" sortable="false" text="Curso" />
-            <TableColumn fx:id="grupoCol" editable="false" prefWidth="80.0" sortable="false" text="Grupo" />
-            <TableColumn fx:id="DNICol" editable="false" prefWidth="100.0" sortable="false" text="DNI" />
-            <TableColumn fx:id="PCCol" editable="true" prefWidth="45.0" sortable="false" text="PC" />
-            <TableColumn fx:id="fijoCol" editable="true" prefWidth="45.0" sortable="false" text="Fijo" />
-            <TableColumn fx:id="nameCol" editable="false" prefWidth="240.0" sortable="false" text="Nombre" />
-            <TableColumn fx:id="claseCol" editable="true" prefWidth="109.0" sortable="false" text="Clase" />
-            <TableColumn fx:id="pec1Col" editable="false" prefWidth="45.0" sortable="false" styleClass="notaPEC" text="PEC1" />
-            <TableColumn fx:id="pecCol" editable="false" prefWidth="55.0" sortable="false" styleClass="notaPEC" text="PEC" />
-            <TableColumn fx:id="notaCol" editable="false" prefWidth="60.0" sortable="false" styleClass="notaFin" text="NOTA" />
-            <TableColumn fx:id="comentCol" prefWidth="270.0" sortable="false" text="Comentarios" />
-        </columns>
-      </TableView>
-      <Label fx:id="ntotal" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="1049.0" layoutY="607.0" prefHeight="17.0" prefWidth="137.0" text="Label" textAlignment="RIGHT" />
-      <TextField fx:id="search" layoutX="3.0" layoutY="607.0" prefHeight="27.0" prefWidth="299.0" promptText="Buscar" />
-      <Button fx:id="btSearch" defaultButton="true" layoutX="311.0" layoutY="608.0" mnemonicParsing="false" onAction="#pbSearch" prefHeight="25.0" prefWidth="25.0" textAlignment="CENTER"> </Button>
-      <Button fx:id="btClean" layoutX="346.0" layoutY="608.0" mnemonicParsing="false" onAction="#pbClean" prefHeight="25.0" prefWidth="25.0"> </Button>
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1200.0">
         <menus>
           <Menu mnemonicParsing="false" text="Archivo">
@@ -57,12 +37,41 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Corregir">
             <items>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuEntregaPEC" text="Entrega PEC" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuProblemasPEC" text="Problemas PEC" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#mnuDescomprimirPEC1" text="Descomprimir PEC1" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuEntregaPEC1" text="Entrega PEC1" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuProblemasPEC1" text="Problemas PEC1" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#mnuSintaxis" text="Obtener Sintaxis">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
             </items>
           </Menu>
         </menus>
       </MenuBar>
+      <TableView fx:id="table" layoutY="26.0" prefHeight="574.0" prefWidth="1200.0" stylesheets="@Alumnos.css">
+        <columns>
+            <TableColumn fx:id="periodoCol" editable="false" prefWidth="75.0" sortable="false" text="Periodo" />
+            <TableColumn fx:id="cursoCol" editable="false" prefWidth="50.0" sortable="false" text="Curso" />
+            <TableColumn fx:id="grupoCol" editable="false" prefWidth="80.0" sortable="false" text="Grupo" />
+            <TableColumn fx:id="DNICol" editable="false" prefWidth="100.0" sortable="false" text="DNI" />
+            <TableColumn fx:id="PCCol" editable="true" prefWidth="45.0" sortable="false" text="PC" />
+            <TableColumn fx:id="fijoCol" editable="true" prefWidth="45.0" sortable="false" text="Fijo" />
+            <TableColumn fx:id="nameCol" editable="false" prefWidth="240.0" sortable="false" text="Nombre" />
+            <TableColumn fx:id="claseCol" editable="true" prefWidth="109.0" sortable="false" text="Clase" />
+            <TableColumn fx:id="pec1Col" editable="false" prefWidth="45.0" sortable="false" styleClass="notaPEC" text="PEC1" />
+            <TableColumn fx:id="pecCol" editable="false" prefWidth="55.0" sortable="false" styleClass="notaPEC" text="PEC" />
+            <TableColumn fx:id="notaCol" editable="false" prefWidth="60.0" sortable="false" styleClass="notaFin" text="NOTA" />
+            <TableColumn fx:id="comentCol" prefWidth="270.0" sortable="false" text="Comentarios" />
+        </columns>
+      </TableView>
+      <Label fx:id="ntotal" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="1049.0" layoutY="607.0" prefHeight="17.0" prefWidth="137.0" text="Label" textAlignment="RIGHT" />
+      <TextField fx:id="search" layoutX="3.0" layoutY="607.0" prefHeight="27.0" prefWidth="299.0" promptText="Buscar" />
+      <Button fx:id="btSearch" defaultButton="true" layoutX="311.0" layoutY="608.0" mnemonicParsing="false" onAction="#pbSearch" prefHeight="25.0" prefWidth="25.0" textAlignment="CENTER"> </Button>
+      <Button fx:id="btClean" layoutX="346.0" layoutY="608.0" mnemonicParsing="false" onAction="#pbClean" prefHeight="25.0" prefWidth="25.0"> </Button>
    </children>
 </AnchorPane>

@@ -66,6 +66,7 @@ public class FXMLproblemasController implements Initializable {
     final ObservableList<Problema> data = FXCollections.observableArrayList();
     
     getAlumnosData d;
+    boolean pec1;
     
     /**
      * Initializes the controller class.
@@ -209,28 +210,38 @@ public class FXMLproblemasController implements Initializable {
     @FXML
     public void pbGrabar(ActionEvent event) {
         this.data.forEach((p) -> { 
-            if (p.getChanged()) {
-                this.d.updateEntregaPEC1(p);
-            }
+            if (p.getChanged()) this.d.updateEntregaPEC(p,this.pec1);
         });
         this.pbSearch(null);
     }
     
-    public void SetData(getAlumnosData d) {
+    public void SetData(getAlumnosData d, boolean pec1) {
         this.d = d;
+        this.pec1 = pec1;
+        if (!this.pec1) {
+            this.mdbCol.setVisible(false);
+            this.pdfCol.setVisible(false);
+        }
         LoadProblemasTable("");
     }
     
     public void LoadProblemasTable(String filter) {
         try{
-            ResultSet rs = this.d.getProblemasPEC1(filter);
+            ResultSet rs;
+            if (this.pec1) rs = this.d.getProblemasPEC1(filter);
+            else rs = this.d.getProblemasPEC(filter);
             while(rs.next()){
                 Problema p = new Problema();
                 p.setGrupo(rs.getString("Grupo"));
                 p.setDNI(rs.getString("DNI"));
                 p.setNombre(rs.getString("nom"));
-                p.setMDB(rs.getBoolean("mdb"));
-                p.setPDF(rs.getBoolean("pdf"));
+                if (this.pec1) {
+                    p.setMDB(rs.getBoolean("mdb"));
+                    p.setPDF(rs.getBoolean("pdf"));
+                } else {
+                    p.setMDB(false);
+                    p.setPDF(false);
+                }
                 p.setHonor(rs.getBoolean("honor"));
                 p.setEmail(rs.getString("email"));
                 

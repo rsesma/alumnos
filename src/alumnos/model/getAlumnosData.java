@@ -1,11 +1,13 @@
 
 package alumnos.model;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.Properties;
 import javafx.scene.control.Alert;
 
 
@@ -21,9 +23,14 @@ public class getAlumnosData {
     
     public Boolean getConnection(String user, String pswd, String server) {
         try {
-            this.conn = DriverManager.getConnection(
-                    C_DRIVER + "://" + server + ":3306/alumnos",
-                    user, pswd);
+            String url = C_DRIVER + "://" + server + ":3306/alumnos";
+            Properties info = new Properties();
+            info.setProperty("user", user);
+            info.setProperty("password", pswd);
+            info.setProperty("useSSL", "true");
+            File cert = new File(new File(System.getProperty("user.home")), "/Documents/server-cert.pem");
+            info.setProperty("serverSslCert", cert.getAbsolutePath());
+            this.conn = DriverManager.getConnection(url, info);
             return true;
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
@@ -47,6 +54,15 @@ public class getAlumnosData {
         }
         else {
             return conn.prepareStatement("SELECT * FROM problemasPEC1").executeQuery();            
+        }
+    }
+
+    public ResultSet getProblemasPEC(String filter) throws SQLException {
+        if (filter.length()>0) {
+            return conn.prepareStatement("SELECT * FROM problemasPEC WHERE " + filter).executeQuery();
+        }
+        else {
+            return conn.prepareStatement("SELECT * FROM problemasPEC").executeQuery();            
         }
     }
     
@@ -90,6 +106,22 @@ public class getAlumnosData {
         }
     }
     
+    public void entregaPEC(String dni, String curso, String periodo, Boolean honor) {
+        try {
+            PreparedStatement q;
+            q = this.conn.prepareStatement("INSERT INTO entregahonor (DNI, Curso, Periodo, entregada, honor) VALUES(?, ?, ?, ?, ?)");
+            q.setString(1, dni);
+            q.setString(2, curso);
+            q.setString(3, periodo);
+            q.setBoolean(4, true);
+            q.setBoolean(5, honor);
+            q.executeUpdate();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+        }
+    }
+    
     public void updateAlumno(Alumno a) {
         try {
             PreparedStatement q;
@@ -106,15 +138,22 @@ public class getAlumnosData {
             alert.showAndWait();
         }
     }
-
-    public void updateEntregaPEC1(Problema p) {
+   
+    public void updateEntregaPEC(Problema p, boolean pec1) {
         try {
             PreparedStatement q;
-            q = conn.prepareStatement("UPDATE entregahonorpec1 SET mdb = ?, pdf = ?, honor = ? WHERE DNI = ?");
-            q.setBoolean(1,p.getMDB());
-            q.setBoolean(2,p.getPDF());
-            q.setBoolean(3,p.getHonor());
-            q.setString(4,p.getDNI());
+            if (pec1) {
+                q = conn.prepareStatement("UPDATE entregahonorpec1 SET mdb = ?, pdf = ?, honor = ? WHERE DNI = ?");
+                q.setBoolean(1,p.getMDB());
+                q.setBoolean(2,p.getPDF());
+                q.setBoolean(3,p.getHonor());
+                q.setString(4,p.getDNI());                
+            } else {
+                q = conn.prepareStatement("UPDATE entregahonor SET honor = ? WHERE DNI = ? AND CURSO = ?");
+                q.setBoolean(1,p.getHonor());
+                q.setString(2,p.getDNI());
+                q.setString(3,p.getGrupo().substring(0,3));
+            }
             q.executeUpdate();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());

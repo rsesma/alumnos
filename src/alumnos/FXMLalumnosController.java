@@ -10,6 +10,8 @@ import alumnos.model.Notas;
 import alumnos.model.getAlumnosData;
 import com.itextpdf.text.pdf.AcroFields;
 import com.itextpdf.text.pdf.PdfReader;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -109,6 +111,7 @@ public class FXMLalumnosController implements Initializable {
     
     private static final String PEC1_comprimidas = "/CorregirPECs/ST1/PEC1/comprimidas";
     private static final String PEC1_originales = "/CorregirPECs/ST1/PEC1/originales";
+    private static final String PEC2_originales = "/CorregirPECs/ST1/PEC2/originales";
     private final File home = new File(System.getProperty("user.home"));
     
     @Override
@@ -417,6 +420,91 @@ public class FXMLalumnosController implements Initializable {
     }
     
     @FXML
+    public void mnuEntregaPEC(ActionEvent event) {
+        // get periodo
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Indicar periodo");
+        dialog.setHeaderText("Indicar periodo");
+        dialog.setContentText("Periodo:");
+        Optional<String> periodo = dialog.showAndWait();
+        if (periodo.isPresent()){
+            System.out.println(periodo);
+            
+            // get PECs folder
+            DirectoryChooser chooser = new DirectoryChooser();
+            File def = new File(this.home, PEC2_originales);
+            chooser.setTitle("Escoger carpeta PECs");
+            chooser.setInitialDirectory(def);
+            File dir = chooser.showDialog(null);
+            if (dir != null) {
+                // get the PEC files of dir
+                FilenameFilter pdfFilter = (File dir1, String name) -> name.toLowerCase().endsWith(".pdf");
+                File[] pecs = dir.listFiles(pdfFilter);
+
+                // loop through the PEC files
+                StringBuilder problems = new StringBuilder("");
+                boolean lproblems = false;
+                for (File pec : pecs) {
+                    if (pec.isFile()) {
+                        String n = pec.getName();
+                        String dni = n.substring(n.lastIndexOf("_")+1,n.lastIndexOf(".pdf"));      //student's dni
+                        String curso = n.substring(5,8);
+
+                        try {
+                            boolean honor = false;
+                            PdfReader reader = new PdfReader(pec.getAbsolutePath());
+                            AcroFields form = reader.getAcroFields();
+                            String prod = reader.getInfo().get("Producer");
+                            if (prod.toUpperCase().contains("LibreOffice".toUpperCase()) |
+                                    form.getFields().size()>0) {
+                                honor = (form.getField("HONOR").equalsIgnoreCase("yes"));   //get honor field
+                                this.d.entregaPEC(dni, curso, periodo.get(), honor);
+                            } else {
+                                lproblems = true;
+                                problems.append(dni + " ; " + prod + "\n");      //the pdf is not readable
+                            }
+                        } catch (Exception e) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION, e.getMessage());
+                            alert.showAndWait();
+                        }
+                    }
+                }
+                
+                if (lproblems) {
+                    Toolkit.getDefaultToolkit()
+                        .getSystemClipboard()
+                        .setContents(new StringSelection(problems.toString()),null);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, problems.toString());
+                    alert.setTitle("Problemas");
+                    alert.setHeaderText("Se encontraron PECs con problemas (copiado al portapapeles)");
+                    alert.showAndWait();
+                }
+                
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Proceso finalizado");
+                alert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    public void mnuProblemasPEC(ActionEvent event) {
+        try {
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("FXMLproblemas.fxml"));
+            Parent r = (Parent) fxml.load();            
+            Stage stage = new Stage(); 
+            stage.initModality(Modality.APPLICATION_MODAL); 
+            stage.setScene(new Scene(r));
+            stage.setTitle("Problemas PEC");
+            FXMLproblemasController probl = fxml.<FXMLproblemasController>getController();
+            probl.SetData(this.d,false);
+            stage.showAndWait();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    @FXML
     public void mnuProblemasPEC1(ActionEvent event) {
         try {
             FXMLLoader fxml = new FXMLLoader(getClass().getResource("FXMLproblemas.fxml"));
@@ -426,7 +514,24 @@ public class FXMLalumnosController implements Initializable {
             stage.setScene(new Scene(r));
             stage.setTitle("Problemas PEC1");
             FXMLproblemasController probl = fxml.<FXMLproblemasController>getController();
-            probl.SetData(this.d);
+            probl.SetData(this.d,true);
+            stage.showAndWait();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    @FXML
+    public void mnuSintaxis(ActionEvent event) {
+        try {
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("FXMLsintaxis.fxml"));
+            Parent r = (Parent) fxml.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(r));
+            stage.setTitle("Definir Exportación de Sintaxis");
+            FXMLsintaxisController sint = fxml.<FXMLsintaxisController>getController();
+            //sint.SetData(this.d,false);
             stage.showAndWait();
         } catch(Exception e) {
             System.out.println(e.getMessage());
