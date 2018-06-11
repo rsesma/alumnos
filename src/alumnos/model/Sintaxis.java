@@ -112,11 +112,9 @@ public class Sintaxis {
                     syntax = syntax +"import excel " + xls + ", sheet(\"" + this.sheet + "\") firstrow" + 
                             newline + newline;
                 
-                    for(int i=2; i<=this.nTotal; i++){
-                        String p = String.format("%02d",i);
-                        String name = "P" + p + "_B";
-                        
+                    for(int i=2; i<=this.nTotal; i++){                        
                         // get syntax from the pdf field
+                        String p = String.format("%02d",i);
                         if (!isExcluded(i)) syntax = syntax + "*Pregunta " + p + newline + form.getField("P"+p+"_B" ) + newline + newline;
                         
                         Pregunta preg = getPregunta(i);

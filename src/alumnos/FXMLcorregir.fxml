@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="660.0" prefWidth="1210.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="alumnos.FXMLcorregirController">
+   <children>
+      <TableView fx:id="table" prefHeight="610.0" prefWidth="1210.0" stylesheets="@Alumnos.css">
+         <columns>
+            <TableColumn fx:id="nCol" editable="false" prefWidth="33.0" sortable="false" styleClass="corrige" text="N" />
+            <TableColumn fx:id="periodoCol" editable="false" prefWidth="117.0" sortable="false" styleClass="corrige" text="Periodo" />
+            <TableColumn fx:id="cursoCol" editable="false" prefWidth="50.0" sortable="false" styleClass="corrige" text="Curso" />
+            <TableColumn fx:id="grupoCol" editable="false" prefWidth="80.0" sortable="false" styleClass="corrige" text="Grupo" />
+            <TableColumn fx:id="DNICol" editable="false" prefWidth="100.0" sortable="false" styleClass="corrige" text="DNI" />
+            <TableColumn fx:id="PCCol" editable="true" prefWidth="45.0" sortable="false" styleClass="corrige" text="PC" />
+            <TableColumn fx:id="nameCol" editable="false" prefWidth="240.0" sortable="false" styleClass="corrige" text="Nombre" />
+            <TableColumn fx:id="claseCol" editable="true" prefWidth="109.0" sortable="false" styleClass="corrige" text="Clase" />
+            <TableColumn fx:id="pecCol" editable="false" prefWidth="55.0" sortable="false" styleClass="notaFin" text="PEC" />
+            <TableColumn fx:id="abreCol" editable="false" prefWidth="60.0" sortable="false" />
+            <TableColumn fx:id="notaCol" editable="false" prefWidth="60.0" sortable="false" />
+         </columns>
+      </TableView>
+      <Label fx:id="ntotal" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="1059.0" layoutY="617.0" prefHeight="17.0" prefWidth="137.0" text="Label" textAlignment="RIGHT" />
+      <TextField fx:id="search" layoutX="13.0" layoutY="617.0" prefHeight="27.0" prefWidth="299.0" promptText="Buscar" />
+      <Button fx:id="btClean" layoutX="356.0" layoutY="618.0" mnemonicParsing="false" onAction="#pbClean" prefHeight="25.0" prefWidth="25.0" />
+      <Button fx:id="btSearch" defaultButton="true" layoutX="321.0" layoutY="618.0" mnemonicParsing="false" onAction="#pbSearch" prefHeight="25.0" prefWidth="25.0" textAlignment="CENTER" />
+   </children>
+</AnchorPane>

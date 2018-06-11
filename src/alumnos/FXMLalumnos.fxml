@@ -37,6 +37,12 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Corregir">
             <items>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuCorregir" text="Corregir">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuEntregaPEC" text="Entrega PEC" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuProblemasPEC" text="Problemas PEC" />
                   <SeparatorMenuItem mnemonicParsing="false" />

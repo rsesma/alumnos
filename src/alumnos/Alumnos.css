@@ -18,3 +18,7 @@ and open the template in the editor.
 .notaPEC {
     -fx-alignment: CENTER;
 }
+
+.corrige {
+    -fx-alignment: center-left;
+}

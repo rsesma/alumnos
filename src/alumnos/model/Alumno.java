@@ -2,6 +2,7 @@
 package alumnos.model;
 
 public class Alumno {
+    private String n;
     private String periodo;
     private String curso;
     private String grupo;
@@ -18,6 +19,14 @@ public class Alumno {
     
     public Alumno() {
         this.changed = false;
+    }
+    
+    public String getN() {
+        return this.n;
+    }
+
+    public void setN(String c) {
+        this.n = c;
     }
     
     public String getPeriodo() {

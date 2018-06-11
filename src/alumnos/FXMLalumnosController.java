@@ -531,13 +531,29 @@ public class FXMLalumnosController implements Initializable {
             stage.setScene(new Scene(r));
             stage.setTitle("Definir Exportación de Sintaxis");
             FXMLsintaxisController sint = fxml.<FXMLsintaxisController>getController();
-            //sint.SetData(this.d,false);
             stage.showAndWait();
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
     }
     
+    @FXML
+    public void mnuCorregir(ActionEvent event) {
+        try {
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("FXMLcorregir.fxml"));
+            Parent r = (Parent) fxml.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(r));
+            stage.setTitle("Corregir");
+            FXMLcorregirController corr = fxml.<FXMLcorregirController>getController();
+            corr.SetData(this.d);
+            stage.showAndWait();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void SetData(getAlumnosData d) {
         this.d = d;
         LoadAlumnosTable("");

@@ -47,6 +47,15 @@ public class getAlumnosData {
             return conn.prepareStatement("SELECT * FROM alumnos_clase").executeQuery();            
         }
     }
+    
+    public ResultSet getCorrigeRs(String filter) throws SQLException {
+        if (filter.length()>0) {
+            return conn.prepareStatement("SELECT * FROM corrige WHERE " + filter).executeQuery();
+        }
+        else {
+            return conn.prepareStatement("SELECT * FROM corrige").executeQuery();            
+        }
+    }
 
     public ResultSet getProblemasPEC1(String filter) throws SQLException {
         if (filter.length()>0) {
