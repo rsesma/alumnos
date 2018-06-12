@@ -530,7 +530,6 @@ public class FXMLalumnosController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(r));
             stage.setTitle("Definir Exportación de Sintaxis");
-            FXMLsintaxisController sint = fxml.<FXMLsintaxisController>getController();
             stage.showAndWait();
         } catch(Exception e) {
             System.out.println(e.getMessage());

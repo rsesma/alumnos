@@ -16,6 +16,8 @@ public class Alumno {
     private String nota;
     private String coment;
     private Boolean changed;
+    private Boolean copia;
+    private String idcopia;
     
     public Alumno() {
         this.changed = false;
@@ -131,5 +133,21 @@ public class Alumno {
 
     public void setChanged(Boolean l) {
         this.changed = l;
+    }
+
+    public Boolean getCopia() {
+        return this.copia;
+    }
+
+    public void setCopia(Boolean l) {
+        this.copia = l;
+    }
+
+    public void setIDCopia(String c) {
+        this.idcopia = c;
+    }
+
+    public String getIDCopia() {
+        return this.idcopia;
     }
 }

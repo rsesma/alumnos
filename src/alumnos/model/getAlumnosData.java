@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.Properties;
 import javafx.scene.control.Alert;
 
@@ -19,6 +20,7 @@ public class getAlumnosData {
         this.conn = null;
         
         if (load) getConnection("roberto","amsesr","192.168.1.69");
+        //if (load) getConnection("roberto","amsesr","rsesmadb.ddns.net");
     }
     
     public Boolean getConnection(String user, String pswd, String server) {
@@ -72,6 +74,20 @@ public class getAlumnosData {
         }
         else {
             return conn.prepareStatement("SELECT * FROM problemasPEC").executeQuery();            
+        }
+    }
+    
+    public ResultSet getPreguntasRs(String periodo, String curso) {
+        try {
+            PreparedStatement q;
+            q = this.conn.prepareStatement("SELECT * FROM pec_estructura WHERE Periodo = ? AND Curso = ?");
+            q.setString(1, periodo);
+            q.setString(2, curso);
+            return q.executeQuery();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+            return null;
         }
     }
     
@@ -130,6 +146,22 @@ public class getAlumnosData {
             alert.showAndWait();
         }
     }
+
+    public void insertRespuesta(String periodo, String curso, String dni, String pregunta, String respuesta) {
+        try {
+            PreparedStatement q;
+            q = this.conn.prepareStatement("INSERT INTO pec_respuestas (Periodo, Curso, DNI, Pregunta, respuesta) VALUES(?, ?, ?, ?, ?)");
+            q.setString(1, periodo);
+            q.setString(2, curso);
+            q.setString(3, dni);
+            q.setString(4, pregunta);
+            q.setString(5, respuesta);
+            q.executeUpdate();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+        }
+    }
     
     public void updateAlumno(Alumno a) {
         try {
@@ -147,7 +179,23 @@ public class getAlumnosData {
             alert.showAndWait();
         }
     }
-   
+
+    public void updateCopia(Alumno a) {
+        try {
+            PreparedStatement q;
+            q = conn.prepareStatement("UPDATE alumnos SET Copia = ?, IDcopia = ? WHERE DNI = ? AND GRUPO = ?");
+            q.setBoolean(1,a.getCopia());
+            if (a.getIDCopia().trim().isEmpty()) q.setNull(2,Types.INTEGER);
+            else q.setString(2,a.getIDCopia());
+            q.setString(3,a.getDNI());
+            q.setString(4,a.getGrupo());
+            q.executeUpdate();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
     public void updateEntregaPEC(Problema p, boolean pec1) {
         try {
             PreparedStatement q;
