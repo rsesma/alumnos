@@ -42,6 +42,7 @@
                         <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#mnuCorregirPEC1" text="Corregir PEC1" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuEntregaPEC" text="Entrega PEC" />
                   <MenuItem mnemonicParsing="false" onAction="#mnuProblemasPEC" text="Problemas PEC" />

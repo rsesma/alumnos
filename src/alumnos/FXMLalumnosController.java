@@ -553,6 +553,23 @@ public class FXMLalumnosController implements Initializable {
         }
     }
 
+    @FXML
+    public void mnuCorregirPEC1(ActionEvent event) {
+        try {
+            FXMLLoader fxml = new FXMLLoader(getClass().getResource("FXMLcorregirPEC1.fxml"));
+            Parent r = (Parent) fxml.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(r));
+            stage.setTitle("Corregir PEC1");
+            FXMLcorregirPEC1Controller corr = fxml.<FXMLcorregirPEC1Controller>getController();
+            corr.SetData(this.d);
+            stage.showAndWait();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public void SetData(getAlumnosData d) {
         this.d = d;
         LoadAlumnosTable("");

@@ -59,6 +59,15 @@ public class getAlumnosData {
         }
     }
 
+    public ResultSet getCorrigePEC1Rs(String filter) throws SQLException {
+        if (filter.length()>0) {
+            return conn.prepareStatement("SELECT * FROM corrigePEC1 WHERE " + filter).executeQuery();
+        }
+        else {
+            return conn.prepareStatement("SELECT * FROM corrigePEC1").executeQuery();            
+        }
+    }
+    
     public ResultSet getProblemasPEC1(String filter) throws SQLException {
         if (filter.length()>0) {
             return conn.prepareStatement("SELECT * FROM problemasPEC1 WHERE " + filter).executeQuery();
