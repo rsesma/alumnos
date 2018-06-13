@@ -7,6 +7,8 @@ package alumnos;
 
 import alumnos.model.Alumno;
 import alumnos.model.getAlumnosData;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfReader;
 import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
@@ -133,43 +135,40 @@ public class FXMLcorregirPEC1Controller implements Initializable {
     }
 
     public void mnuNotaPEC(ActionEvent event) {
-/*        File pdf = null;
         Alumno a = this.table.getItems().get(this.table.getSelectionModel().getSelectedIndex());
         if (a != null) {
             String dni = a.getDNI();
-            String curso = a.getCurso();
+            File folder = new File(def, CORREGIDAS.concat(dni));
             try {
-                if (curso.equalsIgnoreCase("ST1")) pdf = new File(def, ST1_corregidas.concat(dni).concat(".pdf"));
-                if (curso.equalsIgnoreCase("ST2")) pdf = new File(def, ST2_corregidas.concat(dni).concat(".pdf"));
+                // open pdf and database file
+                File[] list = folder.listFiles();
+                for (File f : list) {
+                    String ext = f.getName().substring(f.getName().lastIndexOf(".")+1);
+                    if (ext.equalsIgnoreCase("pdf")) {
+                        // open pdf, get NOTA PEC1 and update server
+                        PdfReader reader = new PdfReader(f.getAbsolutePath());
+                        AcroFields form = reader.getAcroFields();
+                        Integer n = Integer.parseInt(form.getField("NOTA"));
+                        this.d.updatePEC1(dni, a.getGrupo(), n);
+                        reader.close();
+                        
+                        // update tableview to show new NOTAPEC
+                        this.pbSearch(null);
 
-                PdfReader reader = new PdfReader(pdf.getAbsolutePath());
-                AcroFields form = reader.getAcroFields();
-
-                ResultSet rs = this.d.getPreguntasRs(a.getPeriodo(),curso);
-                while(rs.next()){
-                    String p = rs.getString("pregunta");
-                    String r = form.getField("P"+p).replace(".", ",");
-                    
-                    this.d.insertRespuesta(a.getPeriodo(), curso, dni, p, r);
-                }
-                reader.close();
-                rs.close();
-           
-                // update tableview to show new NOTAPEC
-                this.pbSearch(null);
-                
-                // select item again
-                this.data.forEach((i) -> { 
-                    if (i.getN().equals(a.getN())) {
-                        table.getSelectionModel().select(i);
-                        table.scrollTo(i);
+                        // select item again
+                        this.data.forEach((i) -> { 
+                            if (i.getN().equals(a.getN())) {
+                                table.getSelectionModel().select(i);
+                                table.scrollTo(i);
+                            }
+                        });
                     }
-                });
+                }
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 alert.showAndWait();
             }
-        }*/
+        }
     }
     
     @FXML

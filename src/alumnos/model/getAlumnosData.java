@@ -18,9 +18,6 @@ public class getAlumnosData {
     
     public getAlumnosData(Boolean load) {
         this.conn = null;
-        
-        if (load) getConnection("roberto","amsesr","192.168.1.69");
-        //if (load) getConnection("roberto","amsesr","rsesmadb.ddns.net");
     }
     
     public Boolean getConnection(String user, String pswd, String server) {
@@ -220,6 +217,20 @@ public class getAlumnosData {
                 q.setString(2,p.getDNI());
                 q.setString(3,p.getGrupo().substring(0,3));
             }
+            q.executeUpdate();
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());
+            alert.showAndWait();
+        }
+    }
+    
+    public void updatePEC1(String dni, String grupo, Integer notaPEC1) {
+        try {
+            PreparedStatement q;
+            q = conn.prepareStatement("UPDATE alumnos SET PEC1 = ? WHERE DNI = ? AND GRUPO = ?");
+            q.setInt(1, notaPEC1);
+            q.setString(2, dni);
+            q.setString(3, grupo);
             q.executeUpdate();
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.WARNING, e.getMessage());

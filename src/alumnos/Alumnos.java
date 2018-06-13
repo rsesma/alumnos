@@ -18,7 +18,7 @@ public class Alumnos extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        Boolean test = true;
+        Boolean test = false;
         Boolean ok = true;
         getAlumnosData d = null;
         
