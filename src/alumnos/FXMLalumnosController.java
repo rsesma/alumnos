@@ -17,8 +17,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.zip.ZipEntry;
@@ -109,6 +115,7 @@ public class FXMLalumnosController implements Initializable {
     
     getAlumnosData d;
     
+    private static final String CORREGIRPECS = "/CorregirPECs/";
     private static final String PEC1_comprimidas = "/CorregirPECs/ST1/PEC1/comprimidas";
     private static final String PEC1_originales = "/CorregirPECs/ST1/PEC1/originales";
     private static final String PEC2_originales = "/CorregirPECs/ST1/PEC2/originales";
@@ -567,6 +574,73 @@ public class FXMLalumnosController implements Initializable {
             stage.showAndWait();
         } catch(Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+    
+    @FXML
+    public void mnuExport(ActionEvent event) {
+        // get periodo
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Indicar periodo");
+        dialog.setHeaderText("Indicar periodo");
+        dialog.setContentText("Periodo:");
+        Optional<String> periodo = dialog.showAndWait();
+        if (periodo.isPresent()){
+            // get PECs folder
+            DirectoryChooser chooser = new DirectoryChooser();
+            File def = new File(this.home, CORREGIRPECS);
+            chooser.setTitle("Escoger carpeta PECs");
+            chooser.setInitialDirectory(def);
+            File dir = chooser.showDialog(null);
+            if (dir != null) {
+                // get the PEC files of dir
+                FilenameFilter pdfFilter = (File dir1, String name) -> name.toLowerCase().endsWith(".pdf");
+                File[] pecs = dir.listFiles(pdfFilter);
+
+                // get curso from first pdf file
+                String curso = "";
+                for (File pec : pecs) {
+                    if (pec.isFile()) {
+                        curso = pec.getName().substring(5,8);
+                        break;
+                    }
+                }
+                
+                // loop through the PEC files
+                try {
+                    ResultSet rs = this.d.getPreguntasRs(periodo.get(),curso);
+                    List<String> lines = new ArrayList<>();
+                    for (File pec : pecs) {
+                        if (pec.isFile()) {
+                            String n = pec.getName();
+                            String dni = n.substring(pec.getName().lastIndexOf("_")+1,n.lastIndexOf(".pdf"));      //student's dni
+
+                            PdfReader reader = new PdfReader(pec.getAbsolutePath());
+                            AcroFields form = reader.getAcroFields();
+                            //Header with identification data
+                            String c = "'" + form.getField("APE1") + "','" + form.getField("APE2") + "','" + 
+                                    form.getField("NOMBRE") + "','" + dni + "'";
+
+                            rs.beforeFirst();
+                            while(rs.next()){
+                                c = c + ",'" + form.getField("P"+rs.getString("pregunta")).replace(".", ",") + "'";
+                            }
+                            lines.add(c);
+                            reader.close();
+                        }
+                    }
+                    rs.close();
+                    
+                    Path fdata = Paths.get(dir + "/datos_pecs.txt");
+                    Files.write(fdata, lines, Charset.forName("UTF-8"));
+                } catch (Exception e) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, e.getMessage());
+                    alert.showAndWait();
+                }
+            }
+                
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Proceso finalizado");
+            alert.showAndWait();
         }
     }
     
