@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -28,6 +29,8 @@ public class FXMLloginController implements Initializable {
     private TextField user;
     @FXML
     private TextField server;
+    @FXML
+    private CheckBox ssl;
     
     public getAlumnosData d;
     public Boolean ok = false;
@@ -43,7 +46,7 @@ public class FXMLloginController implements Initializable {
     
     @FXML
     void pbAceptar(ActionEvent event) {
-        if (this.d.getConnection(this.user.getText(),this.pswd.getText(),this.server.getText())) {
+        if (this.d.getConnection(this.user.getText(),this.pswd.getText(),this.server.getText(),this.ssl.isSelected())) {
             this.ok = true;
             closeWindow();
         }

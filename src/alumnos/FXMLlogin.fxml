@@ -14,7 +14,8 @@
       <PasswordField fx:id="pswd" layoutX="25.0" layoutY="109.0" />
       <Label layoutX="25.0" layoutY="150.0" text="Servidor" />
       <TextField fx:id="server" layoutX="25.0" layoutY="175.0" />
-      <Button defaultButton="true" layoutX="125.0" layoutY="232.0" mnemonicParsing="false" onAction="#pbAceptar" text="Aceptar" />
-      <Button cancelButton="true" layoutX="25.0" layoutY="232.0" mnemonicParsing="false" onAction="#pbCancelar" text="Cancelar" />
+      <Button defaultButton="true" layoutX="125.0" layoutY="239.0" mnemonicParsing="false" onAction="#pbAceptar" text="Aceptar" />
+      <Button cancelButton="true" layoutX="25.0" layoutY="239.0" mnemonicParsing="false" onAction="#pbCancelar" text="Cancelar" />
+      <CheckBox fx:id="ssl" layoutX="25.0" layoutY="206.0" mnemonicParsing="false" text="Usar SSL" />
    </children>
 </AnchorPane>

@@ -293,7 +293,8 @@ public class FXMLalumnosController implements Initializable {
                     this.data.removeAll(this.data);
                     LoadAlumnosTable(filter);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
+                    alert.showAndWait();
                 }
             }
         }
@@ -363,7 +364,8 @@ public class FXMLalumnosController implements Initializable {
                             zis.closeEntry();
                             zis.close();
                         } catch (Exception e) {
-                            System.out.println(e.getMessage());
+                            Alert alert = new Alert(Alert.AlertType.ERROR,e.getMessage());
+                            alert.showAndWait();
                         }
                     }
                 }
@@ -674,7 +676,9 @@ public class FXMLalumnosController implements Initializable {
             }
         }
         catch(SQLException e){
-            System.out.println(e.getMessage());
+            System.out.println();
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+            alert.showAndWait();
         }
         this.ntotal.setText(count + " registros");
     }

@@ -20,15 +20,17 @@ public class getAlumnosData {
         this.conn = null;
     }
     
-    public Boolean getConnection(String user, String pswd, String server) {
+    public Boolean getConnection(String user, String pswd, String server, Boolean ssl) {
         try {
             String url = C_DRIVER + "://" + server + ":3306/alumnos";
             Properties info = new Properties();
             info.setProperty("user", user);
             info.setProperty("password", pswd);
-            info.setProperty("useSSL", "true");
-            File cert = new File(new File(System.getProperty("user.home")), "/Documents/server-cert.pem");
-            info.setProperty("serverSslCert", cert.getAbsolutePath());
+            if (ssl) {
+                info.setProperty("useSSL", "true");
+                File cert = new File(new File(System.getProperty("user.home")), "/Documents/server-cert.pem");
+                info.setProperty("serverSslCert", cert.getAbsolutePath());                
+            }
             this.conn = DriverManager.getConnection(url, info);
             return true;
         } catch (Exception e) {
